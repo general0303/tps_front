@@ -20,6 +20,8 @@ function Main(){
     const filteredWorkshop = filteredName.filter(d => {
         return d.expenses >= searchExpenses
     })
+    const [len, setLen] = useState(3)
+    const workshops = filteredWorkshop.slice(0, len)
     return (
         <div className="Main">
             <table>
@@ -51,7 +53,7 @@ function Main(){
                         </th>
                    </tr>
                 </div>
-                {filteredWorkshop.map(workshop =>
+                {workshops.map(workshop =>
                 <div className="Workshop" onClick={()=>watch(workshop.lastRepair, setLastRepair, workshop.nextRepair, setNextRepair, setModelActive)}>
                     <tr>
                         <th className="WorkshopElement">
@@ -70,6 +72,7 @@ function Main(){
                 </div>
                 )}
             </table>
+            <button className="Button" onClick={()=>setLen(len + 3)}>Load more</button>
             <p>{"there are " + data.resources + " tons of fuel left"}</p>
             <p>{"total energy generated: " + data.energy}</p>
             <Model active={modelActive} setActive={setModelActive} lastRepair={lastRepair} nextRepair={nextRepair}/>
