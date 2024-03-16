@@ -3,16 +3,37 @@ import {useState} from "react";
 import watch from "../action/actions";
 import {allWorkshops} from "../action/actions";
 import Model from "../components/Model";
+import Input from "../components/Input";
 
 function Main(){
     allWorkshops()
     let data = JSON.parse(sessionStorage.getItem("workshops"))
+    const [searchWorkshop, setSearchWorkshop] = useState("")
+    const [searchExpenses, setSearchExpenses] = useState("")
     console.log(data)
     const [modelActive, setModelActive] = useState(false)
     const [lastRepair, setLastRepair] = useState("")
     const [nextRepair, setNextRepair] = useState("")
+    const filteredName = data.workshops.filter(d => {
+        return d.name.toLowerCase().includes(searchWorkshop.toLowerCase())
+    })
+    const filteredWorkshop = filteredName.filter(d => {
+        return d.expenses >= searchExpenses
+    })
     return (
         <div className="Main">
+            <table>
+                <tr>
+                    <th>
+                        <Input value={searchWorkshop} setValue={setSearchWorkshop} type="text"
+                               placeholder="Поиск цеха"/>
+                    </th>
+                    <th>
+                        <Input value={searchExpenses} setValue={setSearchExpenses} type="number"
+                               placeholder="Минимальный износ"/>
+                    </th>
+                </tr>
+            </table>
             <table>
                 <div className="Workshop">
                     <tr>
@@ -30,7 +51,7 @@ function Main(){
                         </th>
                    </tr>
                 </div>
-                {data.workshops.map(workshop =>
+                {filteredWorkshop.map(workshop =>
                 <div className="Workshop" onClick={()=>watch(workshop.lastRepair, setLastRepair, workshop.nextRepair, setNextRepair, setModelActive)}>
                     <tr>
                         <th className="WorkshopElement">
